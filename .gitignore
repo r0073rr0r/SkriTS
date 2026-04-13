@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+*.js.map
+.claude/
+.idea/
+.vscode/
+.DS_Store
+.codex/.claude/
