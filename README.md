@@ -1,7 +1,7 @@
 # SkriTS
 
 [![CI](https://img.shields.io/github/actions/workflow/status/r0073rr0r/SkriTS/ci.yml?branch=master&label=CI)](https://github.com/r0073rr0r/SkriTS/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/@r0073rr0r/skrts)](https://www.npmjs.com/package/@r0073rr0r/skrts)
+[![npm](https://img.shields.io/npm/v/skrits)](https://www.npmjs.com/package/skrits)
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/License-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](#testing)
 [![GitHub Stars](https://img.shields.io/github/stars/r0073rr0r/SkriTS?style=social)](https://github.com/r0073rr0r/SkriTS/stargazers)
@@ -27,7 +27,7 @@ Also available as:
 ## Install
 
 ```bash
-npm install @r0073rr0r/skrts
+npm install skrits
 ```
 
 ## Usage
@@ -35,7 +35,7 @@ npm install @r0073rr0r/skrts
 ### Unified Router (`encodeText`)
 
 ```typescript
-import { encodeText } from '@r0073rr0r/skrts';
+import { encodeText } from 'skrits';
 
 const result = encodeText('Zemun zakon matori', { mode: 'satro' });
 // 'Munze konza torima'
@@ -47,7 +47,7 @@ const decoded = encodeText('Munze konza', { mode: 'auto' });
 ### Force specific mode
 
 ```typescript
-import { encodeText } from '@r0073rr0r/skrts';
+import { encodeText } from 'skrits';
 
 encodeText('bazen', { mode: 'satro' }); // 'zenba'
 encodeText('bazen', { mode: 'utro' });  // 'uzenzabanje'
@@ -57,7 +57,7 @@ encodeText('bazen', { mode: 'leet', leetBase: 'satro', leetDensity: 1.0 }); // '
 ### Direct transformer classes
 
 ```typescript
-import { Satrovacki, Utrovacki, Leetrovacki } from '@r0073rr0r/skrts';
+import { Satrovacki, Utrovacki, Leetrovacki } from 'skrits';
 
 const satro = new Satrovacki();
 satro.encode('Beograd'); // 'Gradbeo'
@@ -73,7 +73,7 @@ leet.encode('bazen'); // 'uzen24ban73'
 ### Cyrillic support
 
 ```typescript
-import { Satrovacki } from '@r0073rr0r/skrts';
+import { Satrovacki } from 'skrits';
 
 const s = new Satrovacki();
 s.encode('Земун закон матори'); // 'Мунзе конза матори'
@@ -83,7 +83,7 @@ s.encode('Beograd');            // 'Gradbeo'
 ### Leet engine
 
 ```typescript
-import { LeetEncoder, applyLeet, getLeetProfile } from '@r0073rr0r/skrts';
+import { LeetEncoder, applyLeet, getLeetProfile } from 'skrits';
 
 const enc = new LeetEncoder({ profile: 'basic', density: 1.0 });
 enc.encode('bazen'); // '54z3n'

@@ -1,5 +1,5 @@
 {
-  "name": "@r0073rr0r/skit-ts",
+  "name": "skrits",
   "version": "1.0.0",
   "description": "TypeScript port of the Skrit Serbian slang text transformer (satrovacki, utrovacki, leetrovacki)",
   "main": "dist/index.js",
