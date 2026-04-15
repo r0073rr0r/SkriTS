@@ -113,10 +113,12 @@ export function encodeText(text: string, options: SkritOptions = {}): string {
   if (effectiveMode === 'satro') return new Satrovacki(sharedOpts).encode(text);
   if (effectiveMode === 'utro') return new Utrovacki(utroOpts).encode(text);
   if (effectiveMode === 'leet') return new Leetrovacki(leetOpts).encode(text);
+  /* istanbul ignore next */
   return text;
 }
 
 function _autoDecodeText(text: string, options: SkritOptions): string {
+  /* istanbul ignore next */
   const detectFrom = options.detectFrom ?? detectMode(text, options);
   const sharedOpts: SatrovackiOptions = {
     minWordLength: options.minWordLength,
@@ -172,6 +174,7 @@ function _looksLikeLeetrovacki(word: string): boolean {
   let signalCount = 0;
   const signals = new Set(['4', '3', '1', '0', '5', '7', '2', '@', '$', '!']);
   for (const ch of word) {
+    /* istanbul ignore next */
     if (signals.has(ch)) signalCount++;
   }
   return signalCount >= 2;

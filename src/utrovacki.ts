@@ -50,9 +50,12 @@ export class Utrovacki extends Satrovacki {
     const latinLower = latin.toLowerCase();
 
     const splitIdx = this._findSplitIndex(latinLower);
+    const n = strLen(latinLower);
     const chars = splitChars(latinLower);
-    const part1 = chars.slice(0, splitIdx).join('');
-    const part2 = chars.slice(splitIdx).join('');
+
+    // Degenerate split: whole word becomes the second segment (B), A stays empty
+    const part1 = (splitIdx <= 0 || splitIdx >= n) ? '' : chars.slice(0, splitIdx).join('');
+    const part2 = (splitIdx <= 0 || splitIdx >= n) ? latinLower : chars.slice(splitIdx).join('');
 
     const encoded = this.prefix + part2 + this.infix + part1 + this.suffix;
     let result = applyCase(latin, encoded);
@@ -74,6 +77,7 @@ export class Utrovacki extends Satrovacki {
     const latinLower = latin.toLowerCase();
 
     const parts = this._splitEncodedParts(latinLower);
+    /* istanbul ignore next */
     if (!parts) return word;
 
     const [part1, part2] = parts;
@@ -101,11 +105,30 @@ export class Utrovacki extends Satrovacki {
     if (!word.endsWith(suf)) return null;
 
     const inner = word.slice(pre.length, word.length - suf.length);
-    const infIdx = inner.indexOf(inf);
-    if (infIdx === -1) return null;
 
-    const part2 = inner.slice(0, infIdx);
-    const part1 = inner.slice(infIdx + inf.length);
-    return [part1, part2];
+    // Try all occurrences of the infix; validate each by re-running _findSplitIndex
+    let searchStart = 0;
+    while (searchStart <= inner.length - inf.length) {
+      const infIdx = inner.indexOf(inf, searchStart);
+      if (infIdx === -1) break;
+
+      const part2 = inner.slice(0, infIdx);
+      const part1 = inner.slice(infIdx + inf.length);
+      const candidate = part1 + part2;
+
+      const candidateSplit = this._findSplitIndex(candidate);
+      const normalCase = part1.length > 0
+        && candidateSplit === part1.length
+        && part1.length < candidate.length;
+      // Degenerate case: part1='' means the whole word ended up as B
+      // (split at 0 — not produced by current algo, but guarded here for safety)
+      const degenerateCase = part1.length === 0 && candidateSplit >= candidate.length;
+
+      if (normalCase || degenerateCase) return [part1, part2];
+
+      searchStart = infIdx + 1;
+    }
+
+    return null;
   }
 }

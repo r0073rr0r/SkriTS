@@ -10,6 +10,8 @@ import {
   DEFAULT_LEET_DENSITY,
 } from '../src/leet';
 
+// v1.1.0: b→8 and g→6 added to BASIC_LEET_PROFILE
+
 describe('Leet', () => {
   describe('availableProfiles', () => {
     test('returns three profiles', () => {
@@ -112,6 +114,33 @@ describe('Leet', () => {
     test('default density is 0.86', () => {
       const enc = new LeetEncoder();
       expect(enc.density).toBe(DEFAULT_LEET_DENSITY);
+    });
+  });
+
+  describe('BASIC_LEET_PROFILE (v1.1.0)', () => {
+    test('basic profile contains b→8', () => {
+      expect(BASIC_LEET_PROFILE['b']).toBe('8');
+    });
+
+    test('basic profile contains g→6', () => {
+      expect(BASIC_LEET_PROFILE['g']).toBe('6');
+    });
+
+    test('basic profile encodes b to 8 at density 1.0', () => {
+      const enc = new LeetEncoder({ profile: 'basic', density: 1.0 });
+      expect(enc.encode('b')).toBe('8');
+    });
+
+    test('basic profile encodes g to 6 at density 1.0', () => {
+      const enc = new LeetEncoder({ profile: 'basic', density: 1.0 });
+      expect(enc.encode('g')).toBe('6');
+    });
+
+    test('basic profile encodes Beograd satro form (Gradbeo) with b→8 and g→6', () => {
+      // satro of 'Beograd' is 'Gradbeo'; leet of 'gradbeo' at density 1.0:
+      // g→6, r unchanged, a→4, d unchanged, b→8, e→3, o→0
+      const enc = new LeetEncoder({ profile: 'basic', density: 1.0 });
+      expect(enc.encode('gradbeo')).toBe('6r4d830');
     });
   });
 });

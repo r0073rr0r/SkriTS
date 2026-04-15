@@ -109,4 +109,38 @@ describe('Satrovacki', () => {
       expect(s4.encodeWord('pas')).toBe('pas'); // 3 < 4
     });
   });
+
+  describe('vowel-initial words (v1.1.0 fix)', () => {
+    test('ajde encodes using interior vowel with midpoint fallback', () => {
+      // 'ajde': leading vowel 'a', interior vowel 'e' at pos 3 is degenerate → midpoint split=2
+      // result: 'de' + 'aj' = 'deaj'
+      expect(s.encodeWord('ajde')).toBe('deaj');
+    });
+
+    test('ajde strict roundtrip', () => {
+      expect(s.decodeWord(s.encodeWord('ajde'))).toBe('ajde');
+    });
+
+    test('enkripcija encodes at interior vowel', () => {
+      // leading 'e', skip 'nkr', interior 'i' at pos 4, splitIdx=5
+      // 'pcija' + 'enkri' = 'pcijaenkri'
+      expect(s.encodeWord('enkripcija')).toBe('pcijaenkri');
+    });
+
+    test('enkripcija weak roundtrip: encode(decode(encode(w))) == encode(w)', () => {
+      const encoded = s.encodeWord('enkripcija');
+      expect(s.encodeWord(s.decodeWord(encoded))).toBe(encoded);
+    });
+
+    test('ukus encodes correctly (vowel-initial, interior vowel)', () => {
+      // 'u','k','u','s': leading vowel 'u' (end=1), skip consonant 'k', interior vowel 'u' at 2,
+      // splitIdx=3, not degenerate → 's' + 'uku' = 'suku'
+      expect(s.encodeWord('ukus')).toBe('suku');
+    });
+
+    test('ukus weak roundtrip: encode(decode(encode(w))) == encode(w)', () => {
+      const encoded = s.encodeWord('ukus');
+      expect(s.encodeWord(s.decodeWord(encoded))).toBe(encoded);
+    });
+  });
 });

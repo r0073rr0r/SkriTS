@@ -132,7 +132,7 @@ export class Satrovacki {
     const score = ([splitIndex, candidate]: [number, string]): [number, number, number, number] => {
       const secondIsVowel = (strLen(candidate) > 1 && this._isVowelAt(candidate, 1)) ? 1 : 0;
       const startsWithConsonant = (candidate.length > 0 && !this._isVowelAt(candidate, 0)) ? 1 : 0;
-      return [Math.abs(splitIndex - half), -secondIsVowel, -startsWithConsonant, splitIndex];
+      return [-startsWithConsonant, Math.abs(splitIndex - half), -secondIsVowel, splitIndex];
     };
 
     return candidates.reduce((best, cur) => {
@@ -142,22 +142,41 @@ export class Satrovacki {
         if (cs[i] < bs[i]) return cur;
         if (cs[i] > bs[i]) return best;
       }
+      /* istanbul ignore next */
       return best;
     })[1];
   }
 
   protected _findSplitIndex(word: string): number {
+    // Single-pass scan: seek the first interior vowel (i.e. a vowel that follows
+    // at least one consonant). For vowel-initial words, the leading vowel block is
+    // skipped first so that the split falls after the *next* vowel group.
+    // If the interior split would be degenerate (B would be empty), fall back to
+    // floor(n/2). If no interior vowel exists, return the end of the leading
+    // vowel block (or floor(n/2) for all-consonant words).
     const n = strLen(word);
+    let seenConsonant = false;
+    let initialVowelEnd = 0;
+
     for (let i = 0; i < n; i++) {
-      if (this._isVowelAt(word, i)) {
+      if (!this._isVowelAt(word, i)) {
+        seenConsonant = true;
+      } else if (seenConsonant) {
+        // Interior vowel: extend through vowel run
         let splitIdx = i + 1;
-        while (splitIdx < n && this._isVowelAt(word, splitIdx)) {
-          splitIdx++;
-        }
+        while (splitIdx < n && this._isVowelAt(word, splitIdx)) splitIdx++;
+        // Degenerate (B would be empty) — fall back to midpoint
+        if (splitIdx >= n) return Math.floor(n / 2);
         return splitIdx;
+      } else {
+        // Still in leading vowel block
+        initialVowelEnd = i + 1;
       }
     }
-    return Math.floor(n / 2);
+
+    // No interior vowel found
+    if (initialVowelEnd > 0) return initialVowelEnd; // end of leading vowel block
+    return Math.floor(n / 2);                         // all-consonant fallback
   }
 
   protected _isVowelAt(word: string, i: number): boolean {

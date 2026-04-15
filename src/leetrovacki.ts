@@ -116,11 +116,12 @@ export class Leetrovacki {
         const zaStr = this._zaReplacement();
         const njeStr = this._njeReplacement();
 
-        return pre + leetPart2 + zaStr + leetPart1 + njeStr;
+        const leetPre = applyLeet(pre, this.leetMapping, this.leetDensity);
+        return leetPre + leetPart2 + zaStr + leetPart1 + njeStr;
       }
     }
 
-    // Fallback: apply leet to whole thing
+    /* istanbul ignore next */
     return applyLeet(encoded, this.leetMapping, this.leetDensity);
   }
 

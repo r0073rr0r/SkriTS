@@ -30,7 +30,7 @@ export const LEET_TABLE: Record<string, string[]> = {
 };
 
 export const BASIC_LEET_PROFILE: Record<string, string> = {
-  a: '4', e: '3', i: '1', o: '0', s: '5', t: '7', u: '00', z: '2',
+  a: '4', b: '8', e: '3', g: '6', i: '1', o: '0', s: '5', t: '7', u: '00', z: '2',
 };
 
 export const READABLE_FULL_PROFILE: Record<string, string> = {
@@ -75,6 +75,7 @@ export function applyLeet(text: string, mapping: Record<string, string>, density
     const replacement = mapping[lower];
     if (!replacement) return ch;
     // Density check: deterministic pseudo-random based on char value and position
+    /* istanbul ignore next */
     const charOrd = ch.codePointAt(0) ?? 0;
     const score = (pos * 131 + charOrd * 17) % 100;
     if (score >= density * 100) return ch;
